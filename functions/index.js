@@ -20,8 +20,16 @@ exports.addStudent = functions.https.onRequest((request, response) => {
     ).then((writeResult) => {
         return response.json(
             {
-                result:`${writeResult.id}`
+                result: `${writeResult.id}`
             }
         );
     });
 });
+exports.makeUppercase = functions.firestore.document('/student/{documentId}')
+    .onCreate((snap, context) => {
+        const name = snap.data().name;
+        const family = snap.data().family;
+        const uppercaseName = name.toUpperCase();
+        const uppercaseFamily = family.toUpperCase();
+        return snap.ref.set({ name: uppercaseName, family: uppercaseFamily }, { merge: false });
+    });
